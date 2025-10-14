@@ -60,16 +60,20 @@
 
       <!-- Block 2: Dropdown + Run button -->
       <div class="block action-selector">
-        <label for="action-dropdown">Choose Action</label>
-        <select id="action-dropdown" name="actions" aria-label="Choose Action">
-          <option value="" disabled selected>Select an action</option>
-          <option value="summarize">Summarize</option>
-          <option value="reframe">Reframe</option>
-          <option value="proofread">Proofread</option>
-          <option value="extract">Extract</option>
-        </select>
-        <button id="run-action" class="md3-button">Run</button>
-      </div>
+  <label for="action-dropdown">Choose Action</label>
+
+  <div class="action-row">
+    <select id="action-dropdown" name="actions" aria-label="Choose Action">
+      <option value="" disabled selected>Select an action</option>
+      <option value="summarize">Summarize</option>
+      <option value="reframe">Reframe</option>
+      <option value="proofread">Proofread</option>
+      <option value="extract">Extract</option>
+    </select>
+    <button id="run-action" class="md3-button">Run</button>
+  </div>
+</div>
+
 
       <!-- Block 3: Result area -->
       <div class="block output-area">

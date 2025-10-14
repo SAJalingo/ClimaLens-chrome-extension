@@ -94,7 +94,7 @@
     .tab-btn:focus {
     background: var(--color-neutral);
   color: var(--color-secondary);
-}
+  }
 
   .tab-btn.active {
     border-bottom: 3px solid var(--color-primary); /* subtle MD3 indicator */
@@ -151,9 +151,12 @@
 }
 
 /* ===========================================================
-   @layer COMPONENTS — BUTTONS, MODAL, SAVE ITEM CARDS
+   @layer COMPONENTS — BUTTONS, MODAL, SAVE ITEM CARDS, SELECT, LABEL
    =========================================================== */
 @layer components {
+
+    
+
   /* ===== MD3 Buttons ===== */
   .md3-button {
     background: var(--color-primary);
