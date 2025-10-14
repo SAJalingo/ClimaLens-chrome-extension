@@ -124,6 +124,12 @@
     gap: 0.5rem;
   }
 
+  .action-row {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  }
+
   .output-area {
     background: var(--color-neutral);
     border-radius: var(--radius-md);
@@ -155,7 +161,35 @@
    =========================================================== */
 @layer components {
 
-    
+   .action-selector select {
+    flex: .7;
+    padding: 0.5rem 2.5rem 0.5rem 1rem; /* extra right padding for arrow */
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    background-color: #FAFAFA;
+    color: #212121;
+    outline: none;
+    appearance: none; /* removes native arrow */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg' fill='%23212121'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    transition: border-color 0.25s ease, background-color 0.25s ease;
+  } 
+
+   .action-selector select:hover {
+    border-color: var(--color-secondary); 
+    background-color: #F5F5F5;
+  }
+
+  .action-selector select:focus {
+    border-color: var(--color-primary); 
+  }
+
+   .action-selector .md3-button {
+    flex: 1; /* makes button occupy proportional width */
+  }
 
   /* ===== MD3 Buttons ===== */
   .md3-button {
