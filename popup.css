@@ -167,8 +167,8 @@
     border: 1px solid #ccc;
     border-radius: 0.5rem;
     font-size: 0.9rem;
-    background-color: #FAFAFA;
-    color: #212121;
+    background-color: var(--color-light-text);
+    color: var(--color-dark-text);
     outline: none;
     appearance: none; /* removes native arrow */
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg' fill='%23212121'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
