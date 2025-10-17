@@ -27,14 +27,22 @@ document.querySelectorAll(".tab-button").forEach((btn) => {
 
 // ---------- Display Current Site Info ----------
 document.addEventListener("DOMContentLoaded", () => {
-  const siteName = document.querySelector(".site-name");
-  const siteUrl = document.querySelector(".site-url");
+  const currentSite = document.getElementById("current-site");
+
+//   if (!currentSite) {
+//     console.warn("#current-site element not found in popup HTML.");
+//     return;
+//   }
 
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const activeTab = tabs[0];
+
     if (activeTab) {
-      siteName.textContent = activeTab.title || "Unknown Website";
-      siteUrl.textContent = activeTab.url || "No URL Found";
+      // Display title and URL on two lines
+      currentSite.textContent = `${activeTab.title}`;
+    } else {
+      currentSite.textContent = "No active tab detected.";
     }
   });
 });
+

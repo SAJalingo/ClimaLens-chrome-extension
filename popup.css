@@ -161,6 +161,18 @@
    =========================================================== */
 @layer components {
 
+  .site-info .material-icons {
+  font-size: 1.2rem;
+  color: var(--color-primary);
+  vertical-align: middle;
+  transition: color 0.2s ease;
+}
+
+.site-info:hover .material-icons {
+  color: var(--color-secondary);
+}
+
+
    .action-selector select {
     flex: .7;
     padding: 0.5rem 2.5rem 0.5rem 1rem; /* extra right padding for arrow */
