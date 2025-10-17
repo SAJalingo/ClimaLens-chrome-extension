@@ -231,6 +231,15 @@
     background: var(--color-accent);
   }
 
+  .md3-button:disabled,
+.md3-icon-btn:disabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+
   /* ===== Saved Items ===== */
   .saved-item {
     background: var(--color-neutral);

@@ -46,3 +46,57 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+
+// === Action Dropdown Behavior ===
+document.addEventListener("DOMContentLoaded", () => {
+  // --- Select Elements ---
+  const actionSelect = document.getElementById("action-dropdown");
+  const runButton = document.getElementById("run-action");
+  const resultArea = document.getElementById("result");
+
+  // Action buttons
+  const saveBtn = document.getElementById("save-result");
+  const copyBtn = document.getElementById("copy-result");
+  const rerunBtn = document.getElementById("rerun");
+  const clearBtn = document.getElementById("clear");
+
+  // --- Initial States ---
+  runButton.disabled = true;
+  [saveBtn, copyBtn, rerunBtn, clearBtn].forEach(btn => (btn.disabled = true));
+
+  // --- Dropdown Behavior ---
+  actionSelect.addEventListener("change", () => {
+    const selectedValue = actionSelect.value;
+
+    if (selectedValue) {
+      runButton.disabled = false;
+      const selectedText = actionSelect.options[actionSelect.selectedIndex].text;
+      runButton.textContent = selectedText;
+    } else {
+      runButton.disabled = true;
+      runButton.textContent = "Run";
+    }
+  });
+
+  // --- Run Button Click ---
+  runButton.addEventListener("click", async () => {
+    const selectedAction = actionSelect.value;
+    if (!selectedAction) return;
+
+    // Disable run button temporarily and show loading
+    runButton.disabled = true;
+    resultArea.textContent = "Processing…";
+
+    // Simulate async work (e.g., Gemini API call)
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    // Mock result
+    resultArea.textContent = `✅ ${selectedAction.toUpperCase()} result: This is a mock AI output.`;
+
+    // Enable buttons after result is ready
+    [saveBtn, copyBtn, rerunBtn, clearBtn].forEach(btn => (btn.disabled = false));
+
+    // Re-enable run button for re-use
+    runButton.disabled = false;
+  });
+});
