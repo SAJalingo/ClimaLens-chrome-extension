@@ -49,54 +49,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // === Action Dropdown Behavior ===
 document.addEventListener("DOMContentLoaded", () => {
-  // --- Select Elements ---
-  const actionSelect = document.getElementById("action-dropdown");
-  const runButton = document.getElementById("run-action");
-  const resultArea = document.getElementById("result");
+  const actionSelect = document.getElementById("action-select");
+  const actionButton = document.getElementById("action-button");
+  const result = document.getElementById("result");
+  const saveBtn = document.getElementById("save-btn");
+  const copyBtn = document.getElementById("copy-btn");
+  const rerunBtn = document.getElementById("rerun-btn");
+  const clearBtn = document.getElementById("clear-btn");
 
-  // Action buttons
-  const saveBtn = document.getElementById("save-result");
-  const copyBtn = document.getElementById("copy-result");
-  const rerunBtn = document.getElementById("rerun");
-  const clearBtn = document.getElementById("clear");
+  // ✅ Disable action button until user selects an action
+  actionButton.disabled = true;
 
-  // --- Initial States ---
-  runButton.disabled = true;
-  [saveBtn, copyBtn, rerunBtn, clearBtn].forEach(btn => (btn.disabled = true));
+  // ✅ Initially disable all control buttons
+  [saveBtn, copyBtn, rerunBtn, clearBtn].forEach(btn => btn.disabled = true);
 
-  // --- Dropdown Behavior ---
+  // 🔹 Enable action button when a valid action is selected
   actionSelect.addEventListener("change", () => {
-    const selectedValue = actionSelect.value;
-
-    if (selectedValue) {
-      runButton.disabled = false;
-      const selectedText = actionSelect.options[actionSelect.selectedIndex].text;
-      runButton.textContent = selectedText;
+    const selectedAction = actionSelect.value;
+    if (selectedAction) {
+      actionButton.disabled = false;
+      actionButton.textContent = selectedAction.charAt(0).toUpperCase() + selectedAction.slice(1);
     } else {
-      runButton.disabled = true;
-      runButton.textContent = "Run";
+      actionButton.disabled = true;
+      actionButton.textContent = "Select Action";
     }
   });
 
-  // --- Run Button Click ---
-  runButton.addEventListener("click", async () => {
-    const selectedAction = actionSelect.value;
-    if (!selectedAction) return;
+  // 🔹 When action button is clicked
+  actionButton.addEventListener("click", async () => {
+    result.textContent = "Extracting text...";
 
-    // Disable run button temporarily and show loading
-    runButton.disabled = true;
-    resultArea.textContent = "Processing…";
+    try {
+      // Send message to content script to extract text
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      const response = await chrome.tabs.sendMessage(tab.id, { type: "GET_ARTICLE_TEXT" });
 
-    // Simulate async work (e.g., Gemini API call)
-    await new Promise(resolve => setTimeout(resolve, 1500));
+      // Handle extracted text
+      if (response && response.text) {
+        result.textContent = response.text.slice(0, 500) + "…"; // Limit to preview
+        // Enable control buttons
+        [saveBtn, copyBtn, rerunBtn, clearBtn].forEach(btn => btn.disabled = false);
+      } else {
+        result.textContent = "No text found on this page.";
+      }
+    } catch (error) {
+      console.error("Error extracting text:", error);
+      result.textContent = "Failed to extract text.";
+    }
+  });
 
-    // Mock result
-    resultArea.textContent = `✅ ${selectedAction.toUpperCase()} result: This is a mock AI output.`;
-
-    // Enable buttons after result is ready
-    [saveBtn, copyBtn, rerunBtn, clearBtn].forEach(btn => (btn.disabled = false));
-
-    // Re-enable run button for re-use
-    runButton.disabled = false;
+  // 🔹 Clear button handler
+  clearBtn.addEventListener("click", () => {
+    result.textContent = "";
+    [saveBtn, copyBtn, rerunBtn, clearBtn].forEach(btn => btn.disabled = true);
   });
 });
