@@ -1,26 +1,19 @@
 {
-  "manifest_version": 3,
-  "name": "ClimaLens",
-  "version": "1.0",
-  "description": "Extract, analyze, reframe, and proofread sustainability insights using Gemini Built-in AI APIs.",
-  "icons": {
-    "16": "assets/icon16.png",
-    "48": "assets/icon48.png",
-    "128": "assets/icon128.png"
-  },
-  "permissions": ["activeTab", "storage", "scripting"],
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "assets/icon16.png",
-      "48": "assets/icon48.png",
-      "128": "assets/icon128.png"
-    }
-  },
-  "background": {
-    "service_worker": "background.js"
-  },
-  "content_scripts": [
+    "manifest_version": 3,
+    "name": "ClimaLens",
+    "version": "1.0",
+    "description": "AI-powered climate content analysis using Chrome Built-in Gemini API",
+    "permissions": ["activeTab", "scripting", "storage", "tabs"],
+    "host_permissions": ["https://*/*", "http://*/*"],
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "icons": {
+        "16": "assets/icon16.png",
+        "48": "assets/icon48.png",
+        "128": "assets/icon128.png"
+    },
+    "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "js": ["content.js"]
