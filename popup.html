@@ -1,148 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ClimaLens Extension</title>
-  <link rel="stylesheet" href="popup.css" />
-  <link
-  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
-  rel="stylesheet"
-  />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>climaLens - Climate Content Assistant</title>
+    <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=captive_portal" />
 </head>
 <body>
-  <!-- HEADER -->
-  <header class="header" role="banner">
-    <div class="header-content">
-      <!-- <h1 class="app-title">ClimaLens</h1> -->
-      <!-- Logo aligned right -->
-      <img src="assets/logo__3_-removebg-preview.png" alt="ClimaLens Logo" class="app-logo" />
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header" role="banner">
+            <img src="assets/logo.png" alt="climaLens logo" class="logo">
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main" role="main">
+            <!-- Tab Navigation -->
+            <div class="tab-navigation" role="tablist">
+                <button class="tab-button active" 
+                        role="tab" 
+                        aria-selected="true" 
+                        aria-controls="generate-panel"
+                        data-tab="generate">
+                    Generate Summary
+                </button>
+                <button class="tab-button" 
+                        role="tab" 
+                        aria-selected="false" 
+                        aria-controls="saved-panel"
+                        data-tab="saved">
+                    Saved Summaries
+                </button>
+            </div>
+
+            <!-- Generate Summary Panel -->
+            <div id="generate-panel" class="tab-panel active" role="tabpanel">
+                <!-- Current Page Info -->
+                <div class="current-page-card">
+                    <div class="page-icon">
+<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#26734a"><path d="M802-107 696-213v81h-72v-204h204v72h-81l106 106-51 51ZM480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 18-2 36t-5 36h-74q4-18 6.5-36t2.5-36q0-18-2.5-36t-6.5-36H622q2 17 2.5 35t.5 35q0 19-1 37t-2 37h-73q1-19 2-37.5t1-37.5q0-17-.5-34.5T549-552H411q-2 18-2.5 36t-.5 36q0 18 .5 36t2.5 36h93v72h-84q8 45 22 87.5t38 80.5q18 0 36.5-2t35.5-7v74q-17 5-35.5 6T480-96ZM177-408h161q-2-17-2.5-35t-.5-35q0-19 .5-37t2.5-37H177q-4 18-6.5 36t-2.5 36q0 18 2.5 36t6.5 36Zm27-216h143q6-40 16-79t26-76q-60 18-108 58t-77 97Zm186 443q-18-37-27.5-76T347-336H204q29 57 77 97t109 58Zm30-443h120q-8-44-21.5-86T480-789q-25 37-38 79t-22 86Zm193 0h143q-29-57-77-97t-108-58q16 37 26 76t16 79Z"/></svg>                    
+</div>
+                    <div class="page-info">
+                        <h3 class="page-title">Current Page Title</h3>
+                        <p class="page-url">https://example.com/article</p>
+                    </div>
+                </div>
+
+                <!-- Action Section -->
+                <div class="action-section">
+                    <label for="action-select" class="action-label">Choose Action</label>
+                    <div class="action-controls">
+                        <select id="action-select" class="action-select" aria-describedby="action-description">
+                                <option value="intelligence">Intelligence Summary</option>
+                                <option value="metrics">Metrics Extractor</option>
+                                <option value="greenwashing">Greenwashing Risk Scan</option>
+                                <option value="simple">Simple Explanation</option>
+                        </select>
+                        <button id="generate-btn" class="generate-button" aria-label="Generate summary">
+                            Go
+                        </button>
+                    </div>
+                    <p id="action-description" class="action-description">
+                        Select an action and click Go to analyze the current page
+                    </p>
+                </div>
+
+                <!-- Results Area -->
+                <div class="results-section">
+                    <div class="results-header">
+                        <h4>Summary Result</h4>
+                    </div>
+                    <div id="results-content" class="results-content" aria-live="polite">
+                        <p class="placeholder-text">Your summary will appear here...</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button id="save-btn" class="action-btn" aria-label="Save summary" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#26734a"><path d="M816-672v456q0 29.7-21.15 50.85Q773.7-144 744-144H216q-29.7 0-50.85-21.15Q144-186.3 144-216v-528q0-29.7 21.15-50.85Q186.3-816 216-816h456l144 144Zm-72 30L642-744H216v528h528v-426ZM480-252q45 0 76.5-31.5T588-360q0-45-31.5-76.5T480-468q-45 0-76.5 31.5T372-360q0 45 31.5 76.5T480-252ZM264-552h336v-144H264v144Zm-48-77v413-528 115Z"/></svg>
+                    </button>
+                    <button id="copy-btn" class="action-btn icon-only" aria-label="Copy summary" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#26734a"><path d="M360-240q-29.7 0-50.85-21.15Q288-282.3 288-312v-480q0-29.7 21.15-50.85Q330.3-864 360-864h384q29.7 0 50.85 21.15Q816-821.7 816-792v480q0 29.7-21.15 50.85Q773.7-240 744-240H360Zm0-72h384v-480H360v480ZM216-96q-29.7 0-50.85-21.15Q144-138.3 144-168v-552h72v552h456v72H216Zm144-216v-480 480Z"/></svg>
+                    </button>
+                    <button id="rerun-btn" class="action-btn icon-only" aria-label="Regenerate summary" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#26734a"><path d="M480-90q-70 0-131.13-26.6-61.14-26.6-106.4-71.87-45.27-45.26-71.87-106.4Q144-356 144-426h72q0 109 77.5 186.5T480-162q109 0 186.5-77.5T744-426q0-109-77.5-186.5T479.61-690H474l51 51-51 51-138-138 138-138 51 51-52 51h7q70 0 131.13 26.6 61.14 26.6 106.4 71.87 45.27 45.26 71.87 106.4Q816-496 816-426t-26.6 131.13q-26.6 61.14-71.87 106.4-45.26 45.27-106.4 71.87Q550-90 480-90Z"/></svg>
+                    </button>
+                    <button id="clear-btn" class="action-btn icon-only" aria-label="Clear results" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#26734a"><path d="M144-288v-72h528v72H144Zm72-156v-72h528v72H216Zm72-156v-72h528v72H288Z"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Saved Summaries Panel -->
+            <div id="saved-panel" class="tab-panel" role="tabpanel" hidden>
+                <div class="saved-header">
+                    <h3>Your Saved Summaries</h3>
+                </div>
+                <div id="saved-list" class="saved-list" aria-live="polite">
+                    <div class="empty-state">
+                        <p>No saved summaries yet</p>
+                        <p class="empty-subtext">Generate and save your first summary to see it here</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer" role="contentinfo">
+            <p class="footer-text">Powered by <strong>Chrome Built-in APIs</strong> </p>
+        </footer>
     </div>
-  </header>
 
-  <!-- TAB NAVIGATION -->
-  <nav class="tab-nav" role="tablist" aria-label="Main Tabs">
-    <button
-      id="tab-analyze"
-      class="tab-btn active"
-      role="tab"
-      aria-selected="true"
-      aria-controls="panel-analyze"
-    >
-      Generate Insights
-    </button>
-    <button
-      id="tab-save"
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="panel-save"
-    >
-      Saved Insights
-    </button>
-  </nav>
-
-  <!-- MAIN CONTENT AREA -->
-  <main class="tab-container">
-
-    <!-- ANALYZE TAB PANEL -->
-    <section
-      id="panel-analyze"
-      class="tab-panel"
-      role="tabpanel"
-      aria-labelledby="tab-analyze"
-    >
-      <!-- Block 1: Current site info -->
-      <div class="block site-info">
-        <span class="material-symbols-outlined">public</span>
-        <span id="current-site">Loading current site...</span>
-      </div>
-
-      <!-- Block 2: Dropdown + Run button -->
-      <div class="block action-selector">
-  <label for="action-dropdown">Choose Action</label>
-
-  <div class="action-row">
-    <select id="action-dropdown" name="actions" aria-label="Choose Action">
-      <option value="" disabled selected>Select an action</option>
-      <option value="summarize">Summarize</option>
-      <option value="reframe">Reframe</option>
-      <option value="proofread">Proofread</option>
-      <option value="extract">Extract</option>
-    </select>
-    <button id="run-action" class="md3-button">Run</button>
-  </div>
+<!-- Saved Item Modal -->
+<div id="saved-modal" class="modal hidden" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modal-title" class="modal-title">Saved Summary</h2>
+            <button id="modal-close" class="modal-close" aria-label="Close modal">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-meta">
+                <h4 id="modal-page-title" class="modal-page-title">Article Title</h4>
+                <p id="modal-page-url" class="modal-page-url">https://example.com</p>
+            </div>
+            <div id="modal-content" class="modal-summary-content">
+                Summary content will appear here...
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button id="modal-copy" class="modal-action-btn" aria-label="Copy summary">
+                <span class="btn-icon">📋</span>
+                Copy
+            </button>
+            <button id="modal-docs" class="modal-action-btn" aria-label="Send to Google Docs">
+                <span class="btn-icon">📄</span>
+                Send to Google Docs
+            </button>
+        </div>
+    </div>
 </div>
 
-
-      <!-- Block 3: Result area -->
-      <div class="block output-area">
-        <pre id="result" aria-live="polite">Your results will appear here...</pre>
-      </div>
-
-      <!-- Block 4: Action buttons -->
-      <div class="block action-buttons">
-        <button id="save-result" class="md3-button">Save</button>
-        <button id="copy-result" class="md3-icon-btn" title="Copy">
-          <span class="material-symbols-outlined">content_copy</span>
-        </button>
-        <button id="rerun" class="md3-icon-btn" title="Re-run">
-          <span class="material-symbols-outlined">refresh</span>
-        </button>
-        <button id="clear" class="md3-icon-btn" title="Clear">
-          <span class="material-symbols-outlined">clear_all</span>
-        </button>
-      </div>
-    </section>
-
-    <!-- SAVE TAB PANEL -->
-    <section
-      id="panel-save"
-      class="tab-panel hidden"
-      role="tabpanel"
-      aria-labelledby="tab-save"
-    >
-      <div class="saved-list" id="saved-list">
-        <!-- Example saved item (to be dynamically generated) -->
-        <article class="saved-item">
-          <header class="saved-header">
-            <h2 class="action-name">Reframed Summary</h2>
-            <button class="delete-btn" title="Delete">
-              <span class="material-symbols-outlined">delete</span>
-            </button>
-          </header>
-
-          <div class="saved-meta">
-            <p class="saved-title">Sample Webpage Title</p>
-            <small class="saved-site">example.com</small>
-          </div>
-
-          <div class="saved-actions">
-            <button class="view-btn md3-button">View</button>
-          </div>
-        </article>
-      </div>
-    </section>
-  </main>
-
-  <!-- FOOTER -->
-  <footer class="footer" role="contentinfo">
-    <p>Powered by <strong>Gemini</strong></p>
-  </footer>
-
-  <!-- MINI MODAL -->
-  <dialog id="mini-modal" class="mini-modal" aria-modal="true">
-    <header class="modal-header">
-      <h3 id="modal-title">Saved Result</h3>
-      <button id="close-modal" class="md3-icon-btn" title="Close">
-        <span class="material-symbols-outlined">close</span>
-      </button>
-    </header>
-    <div class="modal-content">
-      <pre id="modal-output"></pre>
-    </div>
-  </dialog>
-
-  <script src="popup.js"></script>
+    <script src="popup.js"></script>
 </body>
 </html>
