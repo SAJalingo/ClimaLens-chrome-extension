@@ -25,11 +25,31 @@ document.addEventListener('DOMContentLoaded', initializeExtension);
 
 async function initializeExtension() {
     console.log("Initializing climaLens...");
+    
+    // Check API availability
+    await checkAPIAvailability();
+    
     await updateCurrentPageInfo();
     setupEventListeners();
     
     // Initialize the first tab
     switchToTab('generate');
+}
+
+// Check API availability at startup
+async function checkAPIAvailability() {
+    try {
+        if (typeof ai !== 'undefined' && typeof ai.summarization !== 'undefined') {
+            console.log("✅ Chrome Summarizer API is available");
+            return true;
+        } else {
+            console.warn("❌ Chrome Summarizer API not available");
+            return false;
+        }
+    } catch (error) {
+        console.error("Error checking API availability:", error);
+        return false;
+    }
 }
 
 // Update current page info
@@ -151,54 +171,90 @@ async function extractPageContent() {
             throw new Error('Please navigate to a regular webpage');
         }
 
+        // Inject content script and extract text
         const results = await chrome.scripting.executeScript({
             target: { tabId: tab.id },
-            files: ['content.js']
+            func: () => {
+                // Extract main content - you might want to refine this selector
+                const mainContent = document.querySelector('main, article, .content, #content, [role="main"]') || document.body;
+                return mainContent.innerText || document.body.innerText || 'No readable content found';
+            }
         });
 
-        return results[0]?.result;
+        const content = results[0]?.result;
+        
+        if (!content || content.length < 100) {
+            throw new Error('Please try a webpage with more text content for analysis');
+        }
+
+        return content;
 
     } catch (error) {
         throw new Error('Could not extract content: ' + error.message);
     }
 }
 
-// === NEW: SUMMARIZER API IMPLEMENTATION ===
+// === CORRECTED: SUMMARIZER API IMPLEMENTATION ===
 async function generateWithGemini(mode, content) {
     try {
         console.log("Attempting to use Chrome Summarizer API for mode:", mode);
-        
+
         // Check if Summarizer API is available
-        if (typeof ai === 'undefined' || typeof ai.summarizer === 'undefined') {
+        if (typeof Summarizer === 'undefined' || typeof Summarizer.availability !== 'function') {
             throw new Error('Chrome Summarizer API not available. Enable AI flags in chrome://flags');
+        }
+
+        // Check availability
+        const avail = await Summarizer.availability();
+        console.log("Summarizer availability:", avail);
+        if (avail === 'unavailable') {
+            throw new Error('Summarizer API unavailable on this device');
         }
 
         // Create domain-specific instructions for climate content
         const instructions = createSummarizerInstructions(mode);
-        
-        console.log("Calling ai.summarizer.create() with instructions:", instructions);
-        const response = await ai.summarizer.create({
-            text: content.substring(0, 15000),
-            config: {
-                type: 'key-points',
-                format: 'plain-text',
-                length: 'long'
-            },
-            instructions: instructions
+        console.log("Instructions for summarizer:", instructions);
+
+        // Map your “mode” to API options (type/format/length)
+        // For example:
+        const typeMap = {
+          'quick': 'tldr',
+          'keyPoints': 'key-points',
+          'headline': 'headline'
+        };
+        const lengthMap = {
+          'short': 'short',
+          'medium': 'medium',
+          'long': 'long'
+        };
+        const apiType   = typeMap[mode]            || 'key-points';
+        const apiLength = lengthMap[instructions.length] || 'medium';
+
+        const summarizer = await Summarizer.create({
+            type: apiType,
+            format: 'markdown',
+            length: apiLength,
+            sharedContext: instructions.sharedContext
+        });
+        console.log("Summarizer created with options:", { type: apiType, format: 'markdown', length: apiLength });
+
+        console.log("Generating summary...");
+        const textToSummarize = content.substring(0, 15000); // keep your existing limit
+        const response = await summarizer.summarize(textToSummarize, {
+            context: instructions.context // if you supply a context field
         });
 
-        console.log("Summarizer API response received");
-        
-        if (!response || !response.summary) {
-            throw new Error('Empty response from Summarizer API');
+        console.log("Summarizer API response:", response);
+        if (!response || typeof response.summary !== 'string') {
+            throw new Error('Empty or invalid response from Summarizer API');
         }
 
-        // Add API success indicator for competition proof
-        return response.summary + '\n\n---\n*✅ Generated with Chrome Summarizer API*';
+        return formatAnalysisResponse(response.summary, mode) +
+               '\n\n---\n*✅ Generated with Chrome Summarizer API*';
 
     } catch (error) {
         console.error("Summarizer API error:", error);
-        
+
         // Fallback to languageModel API if available
         try {
             if (chrome.ai?.languageModel?.generate) {
@@ -207,58 +263,72 @@ async function generateWithGemini(mode, content) {
                     prompt: `${PROMPTS[mode]}\n\nCONTENT:\n${content.substring(0, 10000)}`,
                     options: { temperature: 0.2, maxTokens: 1000 }
                 });
-                return fallbackResponse.result + '\n\n---\n*✅ Generated with Chrome Built-in AI (Fallback)*';
+                return formatAnalysisResponse(fallbackResponse.result, mode) +
+                       '\n\n---\n*✅ Generated with Chrome Built-in AI (Fallback)*';
             }
         } catch (fallbackError) {
             console.error("Fallback also failed:", fallbackError);
         }
-        
-        // Final fallback to demo with clear competition guidance
-        return DEMO_RESPONSES[mode] + 
-            '\n\n---\n*🚫 Chrome Summarizer API Unavailable*\n' +
-            'For competition judging, enable these flags:\n' +
-            '• chrome://flags/#optimization-guide-on-device-model\n' +
-            '• chrome://flags/#ai-language-model-demo\n' +
-            '• Requires Chrome M121+ with 4GB+ VRAM or 16GB+ RAM';
+
+        // Final fallback
+        return DEMO_RESPONSES[mode] +
+               '\n\n---\n*🚫 Chrome Summarizer API Unavailable*\n' +
+               'For competition judging, enable these flags:\n' +
+               '• chrome://flags/#optimization-guide-on-device-model\n' +
+               '• chrome://flags/#ai-language-model-demo\n' +
+               '• Requires Chrome M121+ with 4GB+ VRAM or 16GB+ RAM';
     }
+}
+
+// Helper function to format the analysis response based on mode
+function formatAnalysisResponse(summary, mode) {
+    const headers = {
+        intelligence: '🌍 **Sustainability Intelligence Summary**',
+        metrics: '📊 **Climate Metrics Extracted**', 
+        greenwashing: '🔍 **Greenwashing Risk Assessment**',
+        simple: '🤝 **Simple Explanation**'
+    };
+    
+    return `${headers[mode] || '📋 **Analysis Summary**'}\n\n${summary}`;
 }
 
 // Create domain-specific instructions for climate content
 function createSummarizerInstructions(mode) {
     const instructions = {
-        intelligence: `As a senior sustainability analyst, provide comprehensive intelligence on this climate/energy content. Focus on:
-• Key findings and scientific insights
-• Business and economic implications  
-• Policy and regulatory impacts
-• Risks, opportunities, and strategic recommendations
-• Stakeholder perspectives (investors, communities, regulators)`,
-        
-        metrics: `Extract and organize ALL climate and sustainability metrics. Focus on:
-• Emissions: Scope 1, 2, 3 (absolute & intensity)
-• Energy: Renewable %, targets, consumption, efficiency
-• Water: Usage, recycling rates, impact
-• Waste: Reduction targets, circular economy metrics
-• Biodiversity: Conservation, impact assessments
-• Supply Chain: Sustainable sourcing, supplier requirements
-Format as clear, organized metrics with values and targets.`,
-        
+        intelligence: `You are a senior sustainability analyst. Analyze this climate/energy content and provide:
+• KEY INSIGHTS: Most important findings and scientific insights
+• BUSINESS IMPLICATIONS: Economic and strategic impacts  
+• POLICY IMPACT: Regulatory and compliance considerations
+• RECOMMENDATIONS: Actionable strategic recommendations
+• RISKS & OPPORTUNITIES: Major risks and potential opportunities
+Format with clear sections and bullet points.`,
+
+        metrics: `Extract ALL climate and sustainability metrics from this content. Focus on:
+• EMISSIONS DATA: CO2, GHG, Scope 1/2/3, reduction targets
+• ENERGY METRICS: Renewable energy %, consumption, efficiency
+• ENVIRONMENTAL: Water usage, waste management, recycling rates
+• SUSTAINABILITY TARGETS: Net zero dates, renewable goals
+• ESG METRICS: Any environmental, social, governance indicators
+Present as organized, categorized metrics with clear values and units.`,
+
         greenwashing: `Conduct a professional greenwashing risk assessment. Analyze:
-• Specificity and evidence for environmental claims
-• Data transparency and verification status
-• Comparison to industry standards and benchmarks
-• Recognition of challenges and limitations
-• Balance between positive initiatives and negative impacts
-Provide clear risk rating (Low/Medium/High) with specific evidence.`,
-        
+• CLAIM SPECIFICITY: Are claims vague or specific and measurable?
+• EVIDENCE: Is data provided to support claims?
+• TRANSPARENCY: Are limitations and challenges acknowledged?
+• VERIFICATION: Is there third-party verification?
+• COMPARISON: How do claims compare to industry standards?
+Provide: RISK LEVEL (Low/Medium/High), EVIDENCE, RECOMMENDATIONS.`,
+
         simple: `Explain this climate/energy content in simple, accessible language:
-• Use everyday analogies and relatable examples
-• Break down complex concepts step by step
+• Use everyday analogies that ordinary people can understand
+• Break down complex concepts into simple steps
 • Avoid technical jargon and acronyms
-• Focus on why this matters to ordinary people
-• Keep sentences short and structure clear`
+• Focus on why this matters to people's daily lives
+• Keep sentences short and paragraphs clear
+• Use relatable examples and comparisons`
     };
 
-    return instructions[mode] || 'Provide a comprehensive summary of the key points.';
+    return instructions[mode] || 'Provide a clear, well-organized summary of the key points.';
 }
 
 // Display analysis
