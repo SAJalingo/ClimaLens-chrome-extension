@@ -110,7 +110,7 @@
         border: none;
         background: transparent;
         font-size: 0.8125rem; /* 13px */
-        font-weight: 500;
+        font-weight: 600;
         color: var(--color-text-light);
         cursor: pointer;
         transition: all var(--transition-normal);
