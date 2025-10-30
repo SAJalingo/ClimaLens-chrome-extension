@@ -65,8 +65,8 @@
         line-height: 1.5;
         color: var(--color-text);
         background: var(--color-white);
-        min-width: 35rem; /* 400px */
-        min-height: 31.25rem; /* 500px */
+        min-width: 40rem; 
+        min-height: 31.25rem; 
     }
 }
 
