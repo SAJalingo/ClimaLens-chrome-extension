@@ -245,11 +245,12 @@ async function generateWithGemini(mode, content) {
         });
 
         console.log("Summarizer API response:", response);
-        if (!response || typeof response.summary !== 'string') {
+      
+        if (!response || typeof response !== 'string') {
             throw new Error('Empty or invalid response from Summarizer API');
         }
 
-        return formatAnalysisResponse(response.summary, mode) +
+        return formatAnalysisResponse(response, mode) +
                '\n\n---\n*✅ Generated with Chrome Summarizer API*';
 
     } catch (error) {
