@@ -783,7 +783,7 @@
 
     /* Scrollbar Styling */
     ::-webkit-scrollbar {
-        width: 0.375rem; 
+        width: 0.25rem; 
     }
 
     ::-webkit-scrollbar-track {
