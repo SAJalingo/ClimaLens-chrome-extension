@@ -232,6 +232,9 @@ async function generateWithGemini(mode, content) {
 
         const summarizer = await Summarizer.create({
             type: apiType,
+            expectedInputLanguages: ["en", "ja", "es"],
+            outputLanguage: "en",
+            expectedContextLanguages: ["en"],
             format: 'markdown',
             length: apiLength,
             sharedContext: instructions.sharedContext
