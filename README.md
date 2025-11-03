@@ -50,7 +50,7 @@ Follow these steps to test **ClimaLens** locally:
 ```bash
 # Clone this repository
 git clone https://github.com/<yourusername>/ClimaLens-Chrome-Extension.git
-cd ClimaLens-Chrome-Extension
+cd ClimaLens-Chrome-Extension```
 
 # Step 2: Load the Extension in Chrome
 
