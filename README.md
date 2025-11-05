@@ -1,36 +1,35 @@
-# 🌿 ClimaLens – Chrome Extension for Sustainability Insights
+# ClimaLens – Chrome Extension for Sustainability Insights
 
-ClimaLens is a Chrome extension powered by Google's built-in AI (Gemini APIs) that helps sustainability analysts, energy professionals, and researchers extract insights, scan for greenwashing, and simplify complex sustainability content directly within the browser.
+ClimaLens is a Chrome extension powered by Chrome's built-in AI (Summarizer API) that helps sustainability analysts, energy professionals, and researchers extract insights, scan for greenwashing, and simplify complex sustainability content directly within the browser.
 
-## 🚀 Features
+## Features
 
 - **Intelligence Summary** – Generates expert-level sustainability and energy insights from web content
 - **Metrics Extractor** – Extracts ESG and climate-related data points for quick analysis
 - **Greenwashing Scan** – Detects potentially misleading sustainability claims or inconsistencies
 - **Simple Explanation** – Simplifies complex sustainability jargon for better understanding
 
-## 🧠 Inspiration
+## Inspiration
 
 As a Sustainability Data Analyst in energy and climate analytics, I frequently work with lengthy sustainability reports and research papers. Extracting insights manually is tedious and time-consuming. This motivated me to build ClimaLens, a browser extension that brings AI-powered sustainability intelligence directly to your tab.
 
-## 🏗️ How It Works
+## How It Works
 
-ClimaLens integrates with Google's Built-in AI APIs through Chrome's Manifest V3 environment. It uses:
+ClimaLens integrates with Chrome's Built-in AI (Summarizer API). It uses:
 
-- Summarizer API for generating concise summaries
-- Prompt API for running custom sustainability analysis (metrics extraction, greenwashing detection, etc.)
+- Summarizer API for generating concise summaries, metrics extraction, greenwashing detection and simple explanation.
 - Popup UI for interaction with users
 
 The extension processes the active webpage content, sends it to Gemini AI, and returns structured insights directly inside the extension's interface.
 
-## 🧩 Tech Stack
+## Tech Stack
 
 - HTML5, CSS3, JavaScript (ES6)
 - Google Gemini Built-in AI APIs
 - Chrome Manifest V3
 - Local Storage for saved insights
 
-## ⚙️ Installation & Testing Instructions
+## Installation & Testing Instructions
 
 Follow these steps to test ClimaLens locally:
 
@@ -38,3 +37,36 @@ Follow these steps to test ClimaLens locally:
    ```bash
    git clone https://github.com/yourusername/ClimaLens-Chrome-Extension.git
    cd ClimaLens-Chrome-Extension
+
+2. **Open Chrome Extensions Page**
+   - Open Google Chrome browser
+   - Navigate to `chrome://extensions/` in the address bar
+   - Alternatively, click **Settings** → **Extensions** → **Manage Extensions**
+
+3. **Enable Developer Mode**
+   - Locate the **Developer mode** toggle in the top-right corner
+   - Switch the toggle to **ON** position
+   - You should see additional developer options appear
+
+4. **Load Unpacked Extension**
+   - Click the **"Load unpacked"** button
+   - A file dialog window will open
+   - Navigate to and select the project folder containing `manifest.json`
+   - Click **Select Folder** to load the extension
+
+5. **Verify Installation**
+   - You should see **ClimaLens** in your extensions list
+   - The ClimaLens icon (🌿) should appear in your browser toolbar
+   - Ensure the extension is enabled (toggle switch is ON)
+
+### ✅ Verification Checklist:
+- [ ] Extension appears in chrome://extensions/
+- [ ] Developer mode is enabled
+- [ ] No error messages in extensions page
+- [ ] ClimaLens icon visible in toolbar
+- [ ] Extension status shows "Enabled"
+
+### 🚨 Troubleshooting:
+- If the extension doesn't load, ensure you selected the folder containing `manifest.json`
+- If icons don't appear, try refreshing the extensions page
+- For permission errors, check that all required files are present in the folder
